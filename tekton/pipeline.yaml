@@ -6,18 +6,23 @@ spec:
   description: |
     This pipeline clones a git repo and runs testcontainers tests.
   params:
+    - name: app-subdirectory
+      type: string
     - name: repo-url
       type: string
     - name: image-reference
       type: string
     - name: image-tag
       type: string
+    - name: manifest-repo
+      type: string
+    - name: manifest-subdirectory
+      type: string
+
   workspaces:
     - name: shared-data
-      description: |
-        This workspace contains the cloned repo files, so they can be read by the
-        next task.
     - name: docker-credentials
+
   tasks:
     - name: fetch-source
       taskRef:
@@ -28,24 +33,32 @@ spec:
       params:
         - name: url
           value: $(params.repo-url)
-    - name: run-tests
-      runAfter: ["fetch-source"]
-      taskRef:
-        name: run-tests
-      workspaces:
-        - name: source
-          workspace: shared-data
+        - name: deleteExisting
+          value: "true"
+        - name: subdirectory
+          value: $(params.app-subdirectory)
 
     - name: list-source
-      runAfter: [ "run-tests" ]
+      runAfter: [ "fetch-source" ]
       taskRef:
         name: list-source
       workspaces:
         - name: source
           workspace: shared-data
 
+    - name: run-tests
+      runAfter: ["list-source"]
+      taskRef:
+        name: run-tests
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: repo-location
+          value: $(params.app-subdirectory)
+
     - name: build-push
-      runAfter: [ "list-source" ]
+      runAfter: [ "run-tests" ]
       taskRef:
         name: kaniko
       workspaces:
@@ -56,7 +69,36 @@ spec:
       params:
         - name: IMAGE
           value: $(params.image-reference):$(params.image-tag)
+        - name: CONTEXT
+          value: $(params.app-subdirectory)
 
+    - name: fetch-manifest
+      runAfter: [ "build-push" ]
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-data
+      params:
+        - name: url
+          value: $(params.manifest-repo)
+        - name: deleteExisting
+          value: "true"
+        - name: subdirectory
+          value: $(params.manifest-subdirectory)
 
-
-
+#    - name: update-manifest
+#      runAfter: [ "fetch-manifest" ]
+#      taskRef:
+#        name: update-manifest
+#      workspaces:
+#        - name: source
+#          workspace: shared-data
+#      params:
+#        - name: file-path
+#          value: flux/deployment.yaml
+#        - name: repo-location
+#          value: $(params.manifest-subdirectory)
+#
+#        - name: new-tag
+#          value: $(tasks.fetch-source.results.commit)

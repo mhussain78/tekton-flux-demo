@@ -21,6 +21,16 @@ spec:
   params:
     - name: repo-url
       value: https://github.com/mhussain78/tekton-flux-demo.git
+
+    - name: app-subdirectory
+      value: tekton-flux-app
+
+    - name: manifest-repo
+      value: https://github.com/mhussain78/tekton-flux-demo-manifest.git
+
+    - name: manifest-subdirectory
+      value: manifest
+
     - name: image-reference
       value: mhussain78/tekton-flux-demo
     - name: image-tag

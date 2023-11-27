@@ -8,7 +8,7 @@ spec:
   steps:
     - name: read
       image: eclipse-temurin:17.0.3_7-jdk-alpine
-      workingDir: $(workspaces.source.path)
+      workingDir: $(workspaces.source.path)/$(inputs.params.repo-location)
       script: ./mvnw clean package
       volumeMounts:
         - mountPath: /var/run/
