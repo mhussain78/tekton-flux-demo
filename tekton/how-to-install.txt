@@ -1,0 +1,38 @@
+kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.9/git-clone.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/kaniko/0.6/kaniko.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/maven/0.3/maven.yaml
+
+https://stackoverflow.com/questions/70089769/tekton-task-fails-with-more-than-one-persistentvolumeclaim-is-bound
+
+>> Have you tried to disable Tekton affinity assistant?
+
+   $ kubectl edit configmap feature-flags -n tekton-pipelines
+   Look for disable-affinity-assistant. Change its value to true.
+
+   See:
+
+   https://github.com/tektoncd/pipeline/issues/3480
+   https://github.com/tektoncd/pipeline/issues/3085
+   Also: make sure your Tekton stack is relatively up to date, as there may have been some regression (unconfirmed) in 0.14.3.
+
+kubectl apply -f tekton/docker-credentials.yaml
+kubectl apply -f tekton/git-service-account.yaml
+kubectl apply -f tekton/git-ssh-secret.yaml
+kubectl create -f tekton/list-source.yaml
+kubectl create -f tekton/run-tests.yaml
+
+kubectl create -f update-manifest.yaml ### Custom task to update ArgoCD manifest
+
+kubectl create -f pipeline.yaml ### Pipeline definition
+
+kubectl apply -f pipeline.yaml && kubectl create -f pipelineRun.yaml && tkn pipelinerun logs --last --follow
+
+
+you must run the following command in order to access the ingress controller !!!
+>>>>>>>>>> ###########
+minikube tunnel
+>>>>>>>>>> ###########

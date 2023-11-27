@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: tekton-flux-demo-run
+spec:
+  pipelineRef:
+    name: tekton-flux-demo
+  workspaces:
+    - name: shared-data
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+    - name: docker-credentials
+      secret:
+        secretName: docker-credential
+
+  params:
+    - name: repo-url
+      value: https://github.com/mhussain78/tekton-flux-demo.git
+    - name: image-reference
+      value: mhussain78/tekton-flux-demo:0.0.1
+    - name: image-tag
+      value: 0.0.1
+
+  serviceAccountName: git-service-account

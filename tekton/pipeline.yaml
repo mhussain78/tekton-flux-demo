@@ -1,0 +1,62 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tekton-flux-demo
+spec:
+  description: |
+    This pipeline clones a git repo and runs testcontainers tests.
+  params:
+    - name: repo-url
+      type: string
+    - name: image-reference
+      type: string
+    - name: image-tag
+      type: string
+  workspaces:
+    - name: shared-data
+      description: |
+        This workspace contains the cloned repo files, so they can be read by the
+        next task.
+    - name: docker-credentials
+  tasks:
+    - name: fetch-source
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-data
+      params:
+        - name: url
+          value: $(params.repo-url)
+    - name: run-tests
+      runAfter: ["fetch-source"]
+      taskRef:
+        name: run-tests
+      workspaces:
+        - name: source
+          workspace: shared-data
+
+    - name: list-source
+      runAfter: [ "run-tests" ]
+      taskRef:
+        name: list-source
+      workspaces:
+        - name: source
+          workspace: shared-data
+
+    - name: build-push
+      runAfter: [ "list-source" ]
+      taskRef:
+        name: kaniko
+      workspaces:
+        - name: source
+          workspace: shared-data
+        - name: dockerconfig
+          workspace: docker-credentials
+      params:
+        - name: IMAGE
+          value: $(params.image-reference):$(params.image-tag)
+
+
+
+
