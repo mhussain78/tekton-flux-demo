@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:tc:mariadb://localhost:3306/customers_db?TC_REUSABLE=false
+    username: root
+    password: test
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        enable_lazy_load_no_trans: true
+    hibernate:
+      ddl-auto: 'update'
+    show-sql: false
