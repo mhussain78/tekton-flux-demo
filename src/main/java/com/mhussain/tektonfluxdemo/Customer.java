@@ -1,10 +1,7 @@
 package com.mhussain.tektonfluxdemo;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -12,6 +9,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Table(name = "customers")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 class Customer {
