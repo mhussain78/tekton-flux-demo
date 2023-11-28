@@ -36,3 +36,6 @@ you must run the following command in order to access the ingress controller !!!
 >>>>>>>>>> ###########
 minikube tunnel
 >>>>>>>>>> ###########
+
+
+tkn pipelinerun delete tekton-flux-demo-run && kubectl apply -f tekton/pipeline.yaml && kubectl create -f tekton/pipelinerun.yaml && tkn pipelinerun logs --last --follow
