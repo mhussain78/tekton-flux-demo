@@ -18,6 +18,10 @@ spec:
       secret:
         secretName: docker-credential
 
+    - name: ssh-creds
+      secret:
+        secretName: git-ssh-key
+
   params:
     - name: repo-url
       value: https://github.com/mhussain78/tekton-flux-demo.git

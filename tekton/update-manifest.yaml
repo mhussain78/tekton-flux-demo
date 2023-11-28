@@ -6,6 +6,7 @@ spec:
   workspaces:
     - name: source
       description: The source workspace for the manifest repository
+    - name: ssh-directory
   steps:
     - name: modify-manifest-file
       image: alpine/git
@@ -14,9 +15,10 @@ spec:
         cd $(workspaces.source.path)/$(inputs.params.repo-location)
         pwd
         
-        ESCAPED_IMAGE_TAG=$(printf '%s\n' "$(inputs.params.new-tag)" | sed -e 's/[]\/$*.^[]/\\&/g');
-
+        cat $(inputs.params.file-path)
+        
         # Modify the file using sed command
+        ESCAPED_IMAGE_TAG=$(printf '%s\n' "$(inputs.params.new-tag)" | sed -e 's/[]\/$*.^[]/\\&/g');
         sed -i "s/image.*/image: $ESCAPED_IMAGE_TAG/g" $(inputs.params.file-path)
         cat $(inputs.params.file-path)
 
@@ -24,12 +26,12 @@ spec:
         git config --global user.email "inf.mhussain@googlemail.com"
         git config --global user.name "mhussain78"
 
-        # Check Git status
-        git status
-
         # Commit the changes
         git add $(inputs.params.file-path)
         git commit -m "feat: Update manifest file with new tag"
+        
+        # Check Git status
+        git status
         
         # Push the changes
         git push origin HEAD:refs/heads/main
