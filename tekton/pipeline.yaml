@@ -18,6 +18,10 @@ spec:
       type: string
     - name: manifest-subdirectory
       type: string
+    - name: git-email
+      type: string
+    - name: git-username
+      type: string
 
   workspaces:
     - name: shared-data
@@ -99,6 +103,9 @@ spec:
           value: flux/deployment.yaml
         - name: repo-location
           value: $(params.manifest-subdirectory)
-
+        - name: email
+          value: $(params.git-email)
+        - name: username
+          value: $(params.git-username)
         - name: new-tag
           value: $(params.image-reference):$(params.image-tag)

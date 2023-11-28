@@ -22,8 +22,8 @@ spec:
         cat $(inputs.params.file-path)
 
         # Configure Git
-        git config --global user.email "inf.mhussain@googlemail.com"
-        git config --global user.name "mhussain78"
+        git config --global user.email $(inputs.params.email)
+        git config --global user.name $(inputs.params.username)
 
         # Commit the changes
         git add $(inputs.params.file-path)
