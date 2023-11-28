@@ -22,7 +22,6 @@ spec:
   workspaces:
     - name: shared-data
     - name: docker-credentials
-    - name: ssh-creds
 
   tasks:
     - name: fetch-source
@@ -95,8 +94,6 @@ spec:
       workspaces:
         - name: source
           workspace: shared-data
-        - name: ssh-directory
-          workspace: ssh-creds
       params:
         - name: file-path
           value: flux/deployment.yaml

@@ -6,7 +6,6 @@ spec:
   workspaces:
     - name: source
       description: The source workspace for the manifest repository
-    - name: ssh-directory
   steps:
     - name: modify-manifest-file
       image: alpine/git
