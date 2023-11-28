@@ -87,18 +87,18 @@ spec:
         - name: subdirectory
           value: $(params.manifest-subdirectory)
 
-#    - name: update-manifest
-#      runAfter: [ "fetch-manifest" ]
-#      taskRef:
-#        name: update-manifest
-#      workspaces:
-#        - name: source
-#          workspace: shared-data
-#      params:
-#        - name: file-path
-#          value: flux/deployment.yaml
-#        - name: repo-location
-#          value: $(params.manifest-subdirectory)
-#
-#        - name: new-tag
-#          value: $(tasks.fetch-source.results.commit)
+    - name: update-manifest
+      runAfter: [ "fetch-manifest" ]
+      taskRef:
+        name: update-manifest
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: file-path
+          value: flux/deployment.yaml
+        - name: repo-location
+          value: $(params.manifest-subdirectory)
+
+        - name: new-tag
+          value: $(params.image-reference):$(params.image-tag)

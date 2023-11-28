@@ -13,9 +13,11 @@ spec:
         git config --global --add safe.directory $(workspaces.source.path)/$(inputs.params.repo-location)
         cd $(workspaces.source.path)/$(inputs.params.repo-location)
         pwd
+        
+        ESCAPED_IMAGE_TAG=$(printf '%s\n' "$(inputs.params.new-tag)" | sed -e 's/[]\/$*.^[]/\\&/g');
 
         # Modify the file using sed command
-        sed -i "s/newTag.*/newTag: $(inputs.params.new-tag)/g" $(inputs.params.file-path)
+        sed -i "s/image.*/image: $ESCAPED_IMAGE_TAG/g" $(inputs.params.file-path)
         cat $(inputs.params.file-path)
 
         # Configure Git
