@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mariadb://${MARIADB_SERVER_ADDRESS}/customers_db
+    url: jdbc:mariadb://${MARIADB_SERVER_ADDRESS}:${MARIADB_SERVER_PORT:3306}/customers_db
     username: root
     password: anel
     driver-class-name: org.mariadb.jdbc.Driver
