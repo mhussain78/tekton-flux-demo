@@ -37,7 +37,7 @@ class CustomerControllerTest {
         );
 
         var saved = customerRepository.saveAll(customers);
-        saved.forEach(customer -> log.info("Stored customer: " + customer));
+        saved.forEach(customer -> log.info("Stored customer in database: " + customer));
     }
 
     @Test
