@@ -35,7 +35,7 @@ spec:
       value: mhussain78/tekton-flux-demo
 
     - name: image-tag
-      value: 0.0.3
+      value: 0.0.4
 
     - name: git-username
       value: mhussain78
