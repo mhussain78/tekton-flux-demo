@@ -14,9 +14,19 @@ spec:
           resources:
             requests:
               storage: 1Gi
+    - name: maven-local-m2
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 3Gi
     - name: docker-credentials
       secret:
         secretName: docker-credential
+    - name: maven-settings
+      emptyDir: { }
 
   params:
     - name: repo-url

@@ -26,6 +26,8 @@ spec:
   workspaces:
     - name: shared-data
     - name: docker-credentials
+    - name: maven-settings
+    - name: maven-local-m2
 
   tasks:
     - name: fetch-source
@@ -50,19 +52,29 @@ spec:
         - name: source
           workspace: shared-data
 
-    - name: run-tests
-      runAfter: ["list-source"]
+    - name: build-and-test
       taskRef:
-        name: run-tests
+        name: maven-with-sidecar
+      runAfter: [ "list-source" ]
+      params:
+        - name: CONTEXT_DIR
+          value: $(params.app-subdirectory)
+        - name: MAVEN_IMAGE
+          value: maven:3-eclipse-temurin-17-alpine
+        - name: GOALS
+          value:
+            - clean
+            - package
       workspaces:
+        - name: maven-settings
+          workspace: maven-settings
         - name: source
           workspace: shared-data
-      params:
-        - name: repo-location
-          value: $(params.app-subdirectory)
+        - name: maven-local-repo
+          workspace: maven-local-m2
 
-    - name: build-push
-      runAfter: [ "run-tests" ]
+    - name: build-and-push-image
+      runAfter: [ "build-and-test" ]
       taskRef:
         name: kaniko
       workspaces:
@@ -77,7 +89,7 @@ spec:
           value: $(params.app-subdirectory)
 
     - name: fetch-manifest
-      runAfter: [ "build-push" ]
+      runAfter: [ "build-and-push-image" ]
       taskRef:
         name: git-clone
       workspaces:
