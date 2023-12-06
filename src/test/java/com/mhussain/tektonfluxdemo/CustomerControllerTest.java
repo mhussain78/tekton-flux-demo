@@ -37,9 +37,12 @@ class CustomerControllerTest {
 
     @BeforeEach
     void setUp() throws IOException {
+        System.out.println(">>>>>>>>>>>> List of /");
         Files.list(Path.of("/")).forEach(System.out::println);
+
+        System.out.println(">>>>>>>>>>>> List of /root");
         Files.list(Path.of("/root")).forEach(System.out::println);
-        Files.list(Path.of("/root/.docker")).forEach(System.out::println);
+
 
         RestAssured.baseURI = "http://localhost:" + port;
         customerRepository.deleteAll();
