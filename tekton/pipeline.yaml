@@ -72,52 +72,54 @@ spec:
           workspace: shared-data
         - name: maven-local-repo
           workspace: maven-local-m2
-
-    - name: build-and-push-image
-      runAfter: [ "build-and-test" ]
-      taskRef:
-        name: kaniko
-      workspaces:
-        - name: source
-          workspace: shared-data
         - name: dockerconfig
           workspace: docker-credentials
-      params:
-        - name: IMAGE
-          value: $(params.image-reference):$(params.image-tag)
-        - name: CONTEXT
-          value: $(params.app-subdirectory)
 
-    - name: fetch-manifest
-      runAfter: [ "build-and-push-image" ]
-      taskRef:
-        name: git-clone
-      workspaces:
-        - name: output
-          workspace: shared-data
-      params:
-        - name: url
-          value: $(params.manifest-repo)
-        - name: deleteExisting
-          value: "true"
-        - name: subdirectory
-          value: $(params.manifest-subdirectory)
-
-    - name: update-manifest
-      runAfter: [ "fetch-manifest" ]
-      taskRef:
-        name: update-manifest
-      workspaces:
-        - name: source
-          workspace: shared-data
-      params:
-        - name: file-path
-          value: flux/deployment.yaml
-        - name: repo-location
-          value: $(params.manifest-subdirectory)
-        - name: email
-          value: $(params.git-email)
-        - name: username
-          value: $(params.git-username)
-        - name: new-tag
-          value: $(params.image-reference):$(params.image-tag)
+#    - name: build-and-push-image
+#      runAfter: [ "build-and-test" ]
+#      taskRef:
+#        name: kaniko
+#      workspaces:
+#        - name: source
+#          workspace: shared-data
+#        - name: dockerconfig
+#          workspace: docker-credentials
+#      params:
+#        - name: IMAGE
+#          value: $(params.image-reference):$(params.image-tag)
+#        - name: CONTEXT
+#          value: $(params.app-subdirectory)
+#
+#    - name: fetch-manifest
+#      runAfter: [ "build-and-push-image" ]
+#      taskRef:
+#        name: git-clone
+#      workspaces:
+#        - name: output
+#          workspace: shared-data
+#      params:
+#        - name: url
+#          value: $(params.manifest-repo)
+#        - name: deleteExisting
+#          value: "true"
+#        - name: subdirectory
+#          value: $(params.manifest-subdirectory)
+#
+#    - name: update-manifest
+#      runAfter: [ "fetch-manifest" ]
+#      taskRef:
+#        name: update-manifest
+#      workspaces:
+#        - name: source
+#          workspace: shared-data
+#      params:
+#        - name: file-path
+#          value: flux/deployment.yaml
+#        - name: repo-location
+#          value: $(params.manifest-subdirectory)
+#        - name: email
+#          value: $(params.git-email)
+#        - name: username
+#          value: $(params.git-username)
+#        - name: new-tag
+#          value: $(params.image-reference):$(params.image-tag)

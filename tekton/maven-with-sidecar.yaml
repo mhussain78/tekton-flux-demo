@@ -23,6 +23,9 @@ spec:
     - name: maven-local-repo
       description: Local repo (m2) workspace
       optional: true
+    - name: dockerconfig
+      mountPath: /root/.docker
+
   params:
     - name: MAVEN_IMAGE
       type: string
@@ -165,6 +168,7 @@ spec:
           name: dind-storage
         - mountPath: /var/run/
           name: dind-socket
+
   volumes:
     - name: dind-storage
       emptyDir: { }
