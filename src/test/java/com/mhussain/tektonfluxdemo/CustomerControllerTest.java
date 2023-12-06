@@ -8,7 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -25,6 +32,7 @@ class CustomerControllerTest {
     @Autowired
     CustomerRepository customerRepository;
 
+
     @BeforeEach
     void setUp() {
         RestAssured.baseURI = "http://localhost:" + port;
@@ -38,6 +46,18 @@ class CustomerControllerTest {
 
         var saved = customerRepository.saveAll(customers);
         saved.forEach(customer -> log.info("Stored customer in database: " + customer));
+    }
+
+    @Test
+    void testBootingContainer() throws IOException, InterruptedException {
+        try (var container = new GenericContainer<>("mhussain78/greeting-app:0.0.1").withExposedPorts(8080).waitingFor(Wait.forHttp("/resources/greetings"))) {
+            container.start();
+            var client = HttpClient.newHttpClient();
+            var uri = "http://" + container.getHost() + ":" + container.getFirstMappedPort() + "/resources/greetings";
+            var request = HttpRequest.newBuilder(URI.create(uri)).GET().build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            log.info("The body: " + response.body());
+        }
     }
 
     @Test
